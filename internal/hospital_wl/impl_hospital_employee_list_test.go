@@ -5,7 +5,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/suite"
 
@@ -65,7 +64,7 @@ func (suite *HospitalWlSuite) SetupTest() {
 				Id: "test-hospital",
 				EmployeeList: []EmployeeListEntry{
 					{
-						Id:                       "test-entry",
+						Id: "test-entry",
 					},
 				},
 			},
