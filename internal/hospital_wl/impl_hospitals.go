@@ -135,7 +135,7 @@ func (o *implHospitalsAPI) DeleteHospital(c *gin.Context) {
 				"status":  "Bad Gateway",
 				"message": "Failed to delete hospital from database",
 				"error":   err.Error(),
-			}
+			},
         )
 	}
 }

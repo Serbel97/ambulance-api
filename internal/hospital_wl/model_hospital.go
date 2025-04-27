@@ -22,5 +22,5 @@ type Hospital struct {
 
 	EmployeeList []EmployeeListEntry `json:"employeeList,omitempty"`
 
-	PredefinedConditions []Role `json:"predefinedConditions,omitempty"`
+	PredefinedRoles []Role `json:"predefinedRoles,omitempty"`
 }

@@ -322,7 +322,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmployeeListEntry'
-        predefinedConditions:
+        predefinedRoles:
           type: array
           items:
             $ref: '#/components/schemas/Role'
@@ -394,7 +394,7 @@ components:
             condition:
               value: Nurse
               code: nausea
-        predefinedConditions:
+        predefinedRoles:
           - value: Doctor
             code: subfebrilia
           - value: Nurse
