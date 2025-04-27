@@ -77,7 +77,7 @@ func (suite *HospitalWlSuite) Test_UpdateWl_DbServiceUpdateCalled() {
 	suite.dbServiceMock.On("UpdateDocument", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	json := `{
-        "id": "test-entry",
+        "id": "test-entry"
     }`
 
 	gin.SetMode(gin.TestMode)
@@ -90,6 +90,7 @@ func (suite *HospitalWlSuite) Test_UpdateWl_DbServiceUpdateCalled() {
 	}
 	//ctx.Request = httptest.NewRequest("POST", "/hospital/test-hospital/waitinglist/test-entry", strings.NewReader(json))
 	ctx.Request = httptest.NewRequest("POST", "/api/hospital/test-hospital/employeelist/test-entry", strings.NewReader(json))
+    ctx.Request.Header.Set("Content-Type", "application/json")    // ← add this
 
 	sut := &implHospitalEmployeeListAPI{} //TODO
 
