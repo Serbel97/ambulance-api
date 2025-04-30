@@ -76,7 +76,7 @@ func NewMongoService[DocType interface{}](config MongoServiceConfig) DbService[D
 	}
 
 	if svc.DbName == "" {
-		svc.DbName = enviro("HOSPITAL_API_MONGODB_DATABASE", "x-hospital-wl")
+		svc.DbName = enviro("HOSPITAL_API_MONGODB_DATABASE", "x-hospital")
 	}
 
 	if svc.Collection == "" {
