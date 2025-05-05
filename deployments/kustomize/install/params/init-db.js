@@ -44,7 +44,7 @@ db[collection].createIndex({ "id": 1 })
 //insert sample data
 let result = db[collection].insertMany([
     {
-        "id": "bobulova",
+        "id": "hospital-ba",
         "name": "Hospital Bratislava",
         "address": "123",
         "predefinedRoles": [
