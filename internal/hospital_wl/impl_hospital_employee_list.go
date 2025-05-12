@@ -175,6 +175,9 @@ func (o *implHospitalEmployeeListAPI) UpdateEmployeeListEntry(c *gin.Context) {
 		if entry.Id != "" {
 			hospital.EmployeeList[entryIndx].Id = entry.Id
 		}
+		if entry.Name != "" {
+			hospital.EmployeeList[entryIndx].Name = entry.Name
+		}
 
 // 		if entry.EmployeeSince.After(time.Time{}) {
 // 			hospital.EmployeeList[entryIndx].EmployeeSince = entry.EmployeeSince
