@@ -15,6 +15,34 @@ func NewHospitalsApi() HospitalsAPI {
 	return &implHospitalsAPI{}
 }
 
+//func (o *implHospitalsAPI) GetHospital(c *gin.Context) {
+//	c.AbortWithStatus(http.StatusNotImplemented)
+//}
+
+// GET /hospitals
+func (o *implHospitalsAPI) GetHospital(c *gin.Context) {
+	v, exists := c.Get("db_service")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "db_service not found"})
+		return
+	}
+	db, ok := v.(db_service.DbService[Hospital])
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "db_service has wrong type"})
+		return
+	}
+
+	hospitals, err := db.ListDocuments(c)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		return
+	}
+	if hospitals == nil {
+		hospitals = []Hospital{}
+	}
+	c.JSON(http.StatusOK, hospitals)
+}
+
 func (o *implHospitalsAPI) CreateHospital(c *gin.Context) {
 	//c.AbortWithStatus(http.StatusNotImplemented)
 	value, exists := c.Get("db_service")
@@ -136,6 +164,6 @@ func (o *implHospitalsAPI) DeleteHospital(c *gin.Context) {
 				"message": "Failed to delete hospital from database",
 				"error":   err.Error(),
 			},
-        )
+		)
 	}
 }

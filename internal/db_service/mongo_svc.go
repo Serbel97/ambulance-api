@@ -21,6 +21,7 @@ type DbService[DocType interface{}] interface {
 	UpdateDocument(ctx context.Context, id string, document *DocType) error
 	DeleteDocument(ctx context.Context, id string) error
 	Disconnect(ctx context.Context) error
+	ListDocuments(ctx context.Context) ([]DocType, error)
 }
 
 var ErrNotFound = fmt.Errorf("document not found")
@@ -242,4 +243,36 @@ func (m *mongoSvc[DocType]) DeleteDocument(ctx context.Context, id string) error
 	}
 	_, err = collection.DeleteOne(ctx, bson.D{{Key: "id", Value: id}})
 	return err
+}
+
+func (m *mongoSvc[DocType]) ListDocuments(ctx context.Context) ([]DocType, error) {
+	// give yourself the normal timeout/cancel boilerplate
+	ctx, cancel := context.WithTimeout(ctx, m.Timeout)
+	defer cancel()
+
+	client, err := m.connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+	coll := client.Database(m.DbName).Collection(m.Collection)
+
+	// empty filter → everything
+	cursor, err := coll.Find(ctx, bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var results []DocType
+	for cursor.Next(ctx) {
+		var item DocType
+		if err := cursor.Decode(&item); err != nil {
+			return nil, err
+		}
+		results = append(results, item)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	return results, nil
 }

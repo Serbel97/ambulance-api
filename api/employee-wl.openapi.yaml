@@ -221,6 +221,25 @@ paths:
         "404":
           description: Hospital with such ID does not exists
   "/hospital":
+    get:
+      tags:
+        - hospitals
+      summary: Provides the hospital list
+      operationId: getHospital
+      responses:
+        "200":
+          description: hospital list entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Hospital"
+              examples:
+                response:
+                  $ref: "#/components/examples/HospitalListEntriesExample"
+        "404":
+          description: Hospital with such ID does not exist
     post:
       tags:
         - hospitals
@@ -360,6 +379,14 @@ components:
       value:
         valuee: Doctor
         code: subfebrilia
+    HospitalListEntriesExample:
+      summary: List of hospitals
+      description: Example hospital list containing 2 hospitals
+      value:
+        - id: x321ab3
+          name: Hopistal BA
+        - id: x321ab4
+          name: Hospital NR
     EmployeeListEntriesExample:
       summary: List of employees
       description: |
