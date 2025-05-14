@@ -31,6 +31,11 @@ func (this *DbServiceMock[DocType]) CreateDocument(ctx context.Context, id strin
 	return args.Error(0)
 }
 
+func (m *DbServiceMock[DocType]) ListDocuments(ctx context.Context) ([]DocType, error) {
+	args := m.Called(ctx)
+	return args.Get(0).([]DocType), args.Error(1)
+}
+
 func (this *DbServiceMock[DocType]) FindDocument(ctx context.Context, id string) (*DocType, error) {
 	args := this.Called(ctx, id)
 	return args.Get(0).(*DocType), args.Error(1)
