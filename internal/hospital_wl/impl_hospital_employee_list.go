@@ -3,6 +3,7 @@ package hospital_wl
 import (
 	"net/http"
 
+	"github.com/Serbel97/ambulance-api/internal/db_service"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"slices"
@@ -196,4 +197,86 @@ func (o *implHospitalEmployeeListAPI) UpdateEmployeeListEntry(c *gin.Context) {
 		// 		hospital.reconcileEmployeeList()
 		return hospital, hospital.EmployeeList[entryIndx], http.StatusOK
 	})
+}
+
+// TransferEmployeeListEntry moves an employee from one hospital to another
+// POST /api/employee-list/:hospitalId/entries/:entryId/transfer
+func (o *implHospitalEmployeeListAPI) TransferEmployeeListEntry(c *gin.Context) {
+	// 1) parse path params
+	srcHospID := c.Param("hospitalId")
+	entryID := c.Param("entryId")
+	if srcHospID == "" || entryID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": "hospitalId and entryId are required"})
+		return
+	}
+
+	// 2) bind JSON { "targetHospitalId": "..." }
+	var req struct {
+		TargetHospitalId string `json:"targetHospitalId"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil || req.TargetHospitalId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": "Invalid or missing targetHospitalId", "error": err.Error()})
+		return
+	}
+
+	// 3) grab the db service from context
+	val, ok := c.Get("db_service")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError, "message": "db_service not found"})
+		return
+	}
+	dbSvc, ok := val.(db_service.DbService[Hospital])
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError, "message": "invalid db_service type"})
+		return
+	}
+
+	// 4) load source hospital
+	srcHosp, err := dbSvc.FindDocument(c, srcHospID)
+	if err != nil {
+		if err == db_service.ErrNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "source hospital not found"})
+		} else {
+			c.JSON(http.StatusBadGateway, gin.H{"status": http.StatusBadGateway, "message": err.Error()})
+		}
+		return
+	}
+
+	// 5) locate the entry in source
+	idx := slices.IndexFunc(srcHosp.EmployeeList, func(e EmployeeListEntry) bool {
+		return e.Id == entryID
+	})
+	if idx < 0 {
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "entry not found in source hospital"})
+		return
+	}
+	entry := srcHosp.EmployeeList[idx]
+
+	// 6) remove from source list
+	srcHosp.EmployeeList = append(srcHosp.EmployeeList[:idx], srcHosp.EmployeeList[idx+1:]...)
+	if err := dbSvc.UpdateDocument(c, srcHospID, srcHosp); err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"status": http.StatusBadGateway, "message": "failed to update source hospital", "error": err.Error()})
+		return
+	}
+
+	// 7) load destination hospital
+	dstHosp, err := dbSvc.FindDocument(c, req.TargetHospitalId)
+	if err != nil {
+		if err == db_service.ErrNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "target hospital not found"})
+		} else {
+			c.JSON(http.StatusBadGateway, gin.H{"status": http.StatusBadGateway, "message": err.Error()})
+		}
+		return
+	}
+
+	// 8) append to destination list
+	dstHosp.EmployeeList = append(dstHosp.EmployeeList, entry)
+	if err := dbSvc.UpdateDocument(c, req.TargetHospitalId, dstHosp); err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"status": http.StatusBadGateway, "message": "failed to update target hospital", "error": err.Error()})
+		return
+	}
+
+	// 9) respond with the transferred entry
+	c.JSON(http.StatusOK, entry)
 }

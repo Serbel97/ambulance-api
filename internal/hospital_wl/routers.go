@@ -98,6 +98,12 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			handleFunctions.HospitalEmployeeListAPI.GetEmployeeListEntry,
 		},
 		{
+			"TransferEmployeeListEntry",
+			http.MethodPost,
+			"/api/employee-list/:hospitalId/entries/:entryId/transfer",
+			handleFunctions.HospitalEmployeeListAPI.TransferEmployeeListEntry,
+		},
+		{
 			"UpdateEmployeeListEntry",
 			http.MethodPut,
 			"/api/employee-list/:hospitalId/entries/:entryId",

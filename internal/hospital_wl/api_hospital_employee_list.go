@@ -16,25 +16,27 @@ import (
 
 type HospitalEmployeeListAPI interface {
 
+	// CreateEmployeeListEntry Post /api/employee-list/:hospitalId/entries
+	// Saves new entry into employee list
+	CreateEmployeeListEntry(c *gin.Context)
 
-    // CreateEmployeeListEntry Post /api/employee-list/:hospitalId/entries
-    // Saves new entry into employee list 
-     CreateEmployeeListEntry(c *gin.Context)
+	// DeleteEmployeeListEntry Delete /api/employee-list/:hospitalId/entries/:entryId
+	// Deletes specific entry
+	DeleteEmployeeListEntry(c *gin.Context)
 
-    // DeleteEmployeeListEntry Delete /api/employee-list/:hospitalId/entries/:entryId
-    // Deletes specific entry 
-     DeleteEmployeeListEntry(c *gin.Context)
+	// GetEmployeeListEntries Get /api/employee-list/:hospitalId/entries
+	// Provides the hospital employee list
+	GetEmployeeListEntries(c *gin.Context)
 
-    // GetEmployeeListEntries Get /api/employee-list/:hospitalId/entries
-    // Provides the hospital employee list 
-     GetEmployeeListEntries(c *gin.Context)
+	// GetEmployeeListEntry Get /api/employee-list/:hospitalId/entries/:entryId
+	// Provides details about employee list entry
+	GetEmployeeListEntry(c *gin.Context)
 
-    // GetEmployeeListEntry Get /api/employee-list/:hospitalId/entries/:entryId
-    // Provides details about employee list entry 
-     GetEmployeeListEntry(c *gin.Context)
+	// TransferEmployeeListEntry Post /api/employee-list/:hospitalId/entries/:entryId/transfer
+	// Transfer an employee entry to another hospital
+	TransferEmployeeListEntry(c *gin.Context)
 
-    // UpdateEmployeeListEntry Put /api/employee-list/:hospitalId/entries/:entryId
-    // Updates specific entry 
-     UpdateEmployeeListEntry(c *gin.Context)
-
+	// UpdateEmployeeListEntry Put /api/employee-list/:hospitalId/entries/:entryId
+	// Updates specific entry
+	UpdateEmployeeListEntry(c *gin.Context)
 }
