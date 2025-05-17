@@ -59,7 +59,6 @@ func (this *DbServiceMock[DocType]) Disconnect(ctx context.Context) error {
 func (suite *HospitalWlSuite) SetupTest() {
 	suite.dbServiceMock = &DbServiceMock[Hospital]{}
 
-	// Compile time Assert that the mock is of type db_service.DbService[Hospital]
 	var _ db_service.DbService[Hospital] = suite.dbServiceMock
 
 	suite.dbServiceMock.
@@ -78,7 +77,6 @@ func (suite *HospitalWlSuite) SetupTest() {
 }
 
 func (suite *HospitalWlSuite) Test_UpdateWl_DbServiceUpdateCalled() {
-	// ARRANGE
 	suite.dbServiceMock.On("UpdateDocument", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	json := `{
@@ -93,13 +91,10 @@ func (suite *HospitalWlSuite) Test_UpdateWl_DbServiceUpdateCalled() {
 		{Key: "hospitalId", Value: "test-hospital"},
 		{Key: "entryId", Value: "test-entry"},
 	}
-	//ctx.Request = httptest.NewRequest("POST", "/hospital/test-hospital/waitinglist/test-entry", strings.NewReader(json))
 	ctx.Request = httptest.NewRequest("POST", "/api/hospital/test-hospital/employeelist/test-entry", strings.NewReader(json))
 
 	sut := &implHospitalEmployeeListAPI{} //TODO
 
-	// ACT
 	sut.UpdateEmployeeListEntry(ctx)
-	// ASSERT
 	suite.dbServiceMock.AssertCalled(suite.T(), "UpdateDocument", mock.Anything, "test-hospital", mock.Anything)
 }

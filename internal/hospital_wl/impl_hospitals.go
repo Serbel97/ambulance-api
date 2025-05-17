@@ -15,11 +15,6 @@ func NewHospitalsApi() HospitalsAPI {
 	return &implHospitalsAPI{}
 }
 
-//func (o *implHospitalsAPI) GetHospital(c *gin.Context) {
-//	c.AbortWithStatus(http.StatusNotImplemented)
-//}
-
-// GET /hospitals
 func (o *implHospitalsAPI) GetHospital(c *gin.Context) {
 	v, exists := c.Get("db_service")
 	if !exists {
@@ -44,7 +39,6 @@ func (o *implHospitalsAPI) GetHospital(c *gin.Context) {
 }
 
 func (o *implHospitalsAPI) CreateHospital(c *gin.Context) {
-	//c.AbortWithStatus(http.StatusNotImplemented)
 	value, exists := c.Get("db_service")
 	if !exists {
 		c.JSON(
@@ -116,7 +110,6 @@ func (o *implHospitalsAPI) CreateHospital(c *gin.Context) {
 }
 
 func (o *implHospitalsAPI) DeleteHospital(c *gin.Context) {
-	//c.AbortWithStatus(http.StatusNotImplemented)
 	value, exists := c.Get("db_service")
 	if !exists {
 		c.JSON(
