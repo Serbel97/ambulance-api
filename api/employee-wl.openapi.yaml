@@ -19,6 +19,182 @@ tags:
   - name: hospitals
     description: Hospital details
 paths:
+  /employee-list/{hospitalId}/entries/{entryId}/performances:
+    get:
+      tags:
+        - hospitalEmployeeList
+      summary: Get all performance entries for an employee
+      operationId: getPerformanceEntries
+      description: Retrieves all performance entries for a specific employee.
+      parameters:
+        - in: path
+          name: hospitalId
+          required: true
+          schema:
+            type: string
+          description: The ID of the hospital
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: The ID of the employee entry
+      responses:
+        "200":
+          description: List of performance entries for the employee
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PerformanceEntry"
+        "404":
+          description: Hospital or employee entry not found
+    post:
+      tags:
+        - hospitalEmployeeList
+      summary: Create a new performance entry for an employee
+      operationId: createPerformanceEntry
+      description: Creates a new performance entry for a specific employee.
+      parameters:
+        - in: path
+          name: hospitalId
+          required: true
+          schema:
+            type: string
+          description: The ID of the hospital
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: The ID of the employee entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerformanceEntry"
+      responses:
+        "200":
+          description: The created performance entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PerformanceEntry"
+        "400":
+          description: Invalid performance entry data
+        "404":
+          description: Hospital or employee entry not found
+
+  /employee-list/{hospitalId}/entries/{entryId}/performances/{performanceId}:
+    get:
+      tags:
+        - hospitalEmployeeList
+      summary: Get a specific performance entry
+      operationId: getPerformanceEntry
+      description: Retrieves a specific performance entry for an employee.
+      parameters:
+        - in: path
+          name: hospitalId
+          required: true
+          schema:
+            type: string
+          description: The ID of the hospital
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: The ID of the employee entry
+        - in: path
+          name: performanceId
+          required: true
+          schema:
+            type: string
+          description: The ID of the performance entry
+      responses:
+        "200":
+          description: The requested performance entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PerformanceEntry"
+        "404":
+          description: Hospital, employee entry, or performance entry not found
+    put:
+      tags:
+        - hospitalEmployeeList
+      summary: Update a performance entry
+      operationId: updatePerformanceEntry
+      description: Updates a specific performance entry for an employee.
+      parameters:
+        - in: path
+          name: hospitalId
+          required: true
+          schema:
+            type: string
+          description: The ID of the hospital
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: The ID of the employee entry
+        - in: path
+          name: performanceId
+          required: true
+          schema:
+            type: string
+          description: The ID of the performance entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerformanceEntry"
+      responses:
+        "200":
+          description: The updated performance entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PerformanceEntry"
+        "400":
+          description: Invalid performance entry data
+        "404":
+          description: Hospital, employee entry, or performance entry not found
+    delete:
+      tags:
+        - hospitalEmployeeList
+      summary: Delete a performance entry
+      operationId: deletePerformanceEntry
+      description: Deletes a specific performance entry for an employee.
+      parameters:
+        - in: path
+          name: hospitalId
+          required: true
+          schema:
+            type: string
+          description: The ID of the hospital
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: The ID of the employee entry
+        - in: path
+          name: performanceId
+          required: true
+          schema:
+            type: string
+          description: The ID of the performance entry
+      responses:
+        "204":
+          description: Performance entry deleted successfully
+        "404":
+          description: Hospital, employee entry, or performance entry not found
+
   /employee-list/{hospitalId}/entries/{entryId}/transfer:
     post:
       tags:
