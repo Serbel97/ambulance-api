@@ -356,8 +356,44 @@ components:
           description: Name of employee in employee list
         role:
           $ref: "#/components/schemas/Role"
+        performance:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10
+          example: 8
+          description: Performance rating of employee (0-10)
+        performances:
+          type: array
+          items:
+            $ref: "#/components/schemas/PerformanceEntry"
+          description: List of performance entries for this employee
       example:
         $ref: "#/components/examples/EmployeeListEntryExample"
+    PerformanceEntry:
+      type: object
+      required: [ id, activityType, patientName, activityDate, details ]
+      properties:
+        id:
+          type: string
+          example: perf123
+          description: Unique id of the performance entry
+        activityType:
+          type: string
+          example: examination
+          description: Type of activity (examination, surgery, preoperative consultation, checkup)
+        patientName:
+          type: string
+          example: John Doe
+          description: Name of the patient
+        activityDate:
+          type: string
+          example: 01/05/23
+          description: Date of the activity in DD/MM/YY format
+        details:
+          type: string
+          example: Routine checkup with blood pressure measurement
+          description: Details of the operation (up to 255 characters)
     Role:
       description: "Describes employee position in hospital"
       required:
@@ -423,6 +459,13 @@ components:
         role:
           value: Nurse
           code: nausea
+        performance: 8
+        performances:
+          - id: perf123
+            activityType: examination
+            patientName: John Doe
+            activityDate: 01/05/23
+            details: Routine checkup with blood pressure measurement
     RoleExample:
       summary: Roles
       description: list of few roles that can be chosen to employee
@@ -447,11 +490,30 @@ components:
           role:
             value: Doctor
             code: subfebrilia
+          performance: 9
+          performances:
+            - id: perf123
+              activityType: surgery
+              patientName: Jane Smith
+              activityDate: 15/04/23
+              details: Appendectomy performed successfully
+            - id: perf124
+              activityType: checkup
+              patientName: Tom Brown
+              activityDate: 20/04/23
+              details: Post-surgery follow-up
         - id: x321ab4
           name: Ferdinand Trety
           role:
             value: Nurse
             code: nausea
+          performance: 7
+          performances:
+            - id: perf125
+              activityType: preoperative consultation
+              patientName: Alice Johnson
+              activityDate: 10/05/23
+              details: Patient prepared for upcoming surgery
     HospitalExample:
       summary: Sample hospital
       description: |
@@ -482,3 +544,4 @@ components:
             code: administration
           - value: Economist
             code: blood-test
+            
