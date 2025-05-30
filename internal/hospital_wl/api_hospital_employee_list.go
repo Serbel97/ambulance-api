@@ -39,4 +39,24 @@ type HospitalEmployeeListAPI interface {
 	// UpdateEmployeeListEntry Put /api/employee-list/:hospitalId/entries/:entryId
 	// Updates specific entry
 	UpdateEmployeeListEntry(c *gin.Context)
+
+	// GetPerformanceEntries Get /api/employee-list/:hospitalId/entries/:entryId/performances
+	// Get all performance entries for an employee
+	GetPerformanceEntries(c *gin.Context)
+
+	// CreatePerformanceEntry Post /api/employee-list/:hospitalId/entries/:entryId/performances
+	// Create a new performance entry for an employee
+	CreatePerformanceEntry(c *gin.Context)
+
+	// GetPerformanceEntry Get /api/employee-list/:hospitalId/entries/:entryId/performances/:performanceId
+	// Get a specific performance entry
+	GetPerformanceEntry(c *gin.Context)
+
+	// UpdatePerformanceEntry Put /api/employee-list/:hospitalId/entries/:entryId/performances/:performanceId
+	// Update a performance entry
+	UpdatePerformanceEntry(c *gin.Context)
+
+	// DeletePerformanceEntry Delete /api/employee-list/:hospitalId/entries/:entryId/performances/:performanceId
+	// Delete a performance entry
+	DeletePerformanceEntry(c *gin.Context)
 }
