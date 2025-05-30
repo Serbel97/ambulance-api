@@ -110,6 +110,36 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			handleFunctions.HospitalEmployeeListAPI.UpdateEmployeeListEntry,
 		},
 		{
+			"GetPerformanceEntries",
+			http.MethodGet,
+			"/api/employee-list/:hospitalId/entries/:entryId/performances",
+			handleFunctions.HospitalEmployeeListAPI.GetPerformanceEntries,
+		},
+		{
+			"CreatePerformanceEntry",
+			http.MethodPost,
+			"/api/employee-list/:hospitalId/entries/:entryId/performances",
+			handleFunctions.HospitalEmployeeListAPI.CreatePerformanceEntry,
+		},
+		{
+			"GetPerformanceEntry",
+			http.MethodGet,
+			"/api/employee-list/:hospitalId/entries/:entryId/performances/:performanceId",
+			handleFunctions.HospitalEmployeeListAPI.GetPerformanceEntry,
+		},
+		{
+			"UpdatePerformanceEntry",
+			http.MethodPut,
+			"/api/employee-list/:hospitalId/entries/:entryId/performances/:performanceId",
+			handleFunctions.HospitalEmployeeListAPI.UpdatePerformanceEntry,
+		},
+		{
+			"DeletePerformanceEntry",
+			http.MethodDelete,
+			"/api/employee-list/:hospitalId/entries/:entryId/performances/:performanceId",
+			handleFunctions.HospitalEmployeeListAPI.DeletePerformanceEntry,
+		},
+		{
 			"GetRoles",
 			http.MethodGet,
 			"/api/employee-list/:hospitalId/role",
