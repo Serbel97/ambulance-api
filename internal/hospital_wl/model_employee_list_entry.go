@@ -10,6 +10,23 @@
 
 package hospital_wl
 
+type PerformanceEntry struct {
+	// Unique id of the performance entry
+	Id string `json:"id"`
+
+	// Type of activity (examination, surgery, preoperative consultation, checkup)
+	ActivityType string `json:"activityType"`
+
+	// Name of the patient
+	PatientName string `json:"patientName"`
+
+	// Date of the activity in DD/MM/YY format
+	ActivityDate string `json:"activityDate"`
+
+	// Details of the operation (up to 255 characters)
+	Details string `json:"details"`
+}
+
 type EmployeeListEntry struct {
 
 	// Unique id of the entry in this employee list
@@ -19,4 +36,10 @@ type EmployeeListEntry struct {
 	Name string `json:"name,omitempty"`
 
 	Role Role `json:"role,omitempty"`
+
+	// Performance rating of employee (0-10)
+	Performance int32 `json:"performance,omitempty"`
+
+	// List of performance entries for this employee
+	Performances []PerformanceEntry `json:"performances,omitempty"`
 }
