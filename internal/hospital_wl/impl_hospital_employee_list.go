@@ -239,3 +239,215 @@ func (o *implHospitalEmployeeListAPI) TransferEmployeeListEntry(c *gin.Context) 
 
 	c.JSON(http.StatusOK, entry)
 }
+
+func (o *implHospitalEmployeeListAPI) GetPerformanceEntries(c *gin.Context) {
+	updateHospitalFunc(c, func(c *gin.Context, hospital *Hospital) (*Hospital, interface{}, int) {
+		entryId := c.Param("entryId")
+
+		if entryId == "" {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Entry ID is required",
+			}, http.StatusBadRequest
+		}
+
+		entryIndx := slices.IndexFunc(hospital.EmployeeList, func(employee EmployeeListEntry) bool {
+			return entryId == employee.Id
+		})
+
+		if entryIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Entry not found",
+			}, http.StatusNotFound
+		}
+
+		performances := hospital.EmployeeList[entryIndx].Performances
+		if performances == nil {
+			performances = []PerformanceEntry{}
+		}
+
+		return nil, performances, http.StatusOK
+	})
+}
+
+func (o *implHospitalEmployeeListAPI) CreatePerformanceEntry(c *gin.Context) {
+	updateHospitalFunc(c, func(c *gin.Context, hospital *Hospital) (*Hospital, interface{}, int) {
+		entryId := c.Param("entryId")
+
+		if entryId == "" {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Entry ID is required",
+			}, http.StatusBadRequest
+		}
+
+		entryIndx := slices.IndexFunc(hospital.EmployeeList, func(employee EmployeeListEntry) bool {
+			return entryId == employee.Id
+		})
+
+		if entryIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Entry not found",
+			}, http.StatusNotFound
+		}
+
+		var performance PerformanceEntry
+		if err := c.ShouldBindJSON(&performance); err != nil {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Invalid request body",
+				"error":   err.Error(),
+			}, http.StatusBadRequest
+		}
+
+		if performance.Id == "" {
+			performance.Id = uuid.NewString()
+		}
+
+		if hospital.EmployeeList[entryIndx].Performances == nil {
+			hospital.EmployeeList[entryIndx].Performances = []PerformanceEntry{}
+		}
+
+		hospital.EmployeeList[entryIndx].Performances = append(hospital.EmployeeList[entryIndx].Performances, performance)
+		return hospital, performance, http.StatusOK
+	})
+}
+
+func (o *implHospitalEmployeeListAPI) GetPerformanceEntry(c *gin.Context) {
+	updateHospitalFunc(c, func(c *gin.Context, hospital *Hospital) (*Hospital, interface{}, int) {
+		entryId := c.Param("entryId")
+		performanceId := c.Param("performanceId")
+
+		if entryId == "" || performanceId == "" {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Entry ID and Performance ID are required",
+			}, http.StatusBadRequest
+		}
+
+		entryIndx := slices.IndexFunc(hospital.EmployeeList, func(employee EmployeeListEntry) bool {
+			return entryId == employee.Id
+		})
+
+		if entryIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Entry not found",
+			}, http.StatusNotFound
+		}
+
+		performanceIndx := slices.IndexFunc(hospital.EmployeeList[entryIndx].Performances, func(perf PerformanceEntry) bool {
+			return performanceId == perf.Id
+		})
+
+		if performanceIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Performance entry not found",
+			}, http.StatusNotFound
+		}
+
+		return nil, hospital.EmployeeList[entryIndx].Performances[performanceIndx], http.StatusOK
+	})
+}
+
+func (o *implHospitalEmployeeListAPI) UpdatePerformanceEntry(c *gin.Context) {
+	updateHospitalFunc(c, func(c *gin.Context, hospital *Hospital) (*Hospital, interface{}, int) {
+		entryId := c.Param("entryId")
+		performanceId := c.Param("performanceId")
+
+		if entryId == "" || performanceId == "" {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Entry ID and Performance ID are required",
+			}, http.StatusBadRequest
+		}
+
+		entryIndx := slices.IndexFunc(hospital.EmployeeList, func(employee EmployeeListEntry) bool {
+			return entryId == employee.Id
+		})
+
+		if entryIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Entry not found",
+			}, http.StatusNotFound
+		}
+
+		performanceIndx := slices.IndexFunc(hospital.EmployeeList[entryIndx].Performances, func(perf PerformanceEntry) bool {
+			return performanceId == perf.Id
+		})
+
+		if performanceIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Performance entry not found",
+			}, http.StatusNotFound
+		}
+
+		var performance PerformanceEntry
+		if err := c.ShouldBindJSON(&performance); err != nil {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Invalid request body",
+				"error":   err.Error(),
+			}, http.StatusBadRequest
+		}
+
+		// Ensure the ID in the path matches the ID in the body
+		if performance.Id != performanceId {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Performance ID in path does not match ID in body",
+			}, http.StatusBadRequest
+		}
+
+		hospital.EmployeeList[entryIndx].Performances[performanceIndx] = performance
+		return hospital, performance, http.StatusOK
+	})
+}
+
+func (o *implHospitalEmployeeListAPI) DeletePerformanceEntry(c *gin.Context) {
+	updateHospitalFunc(c, func(c *gin.Context, hospital *Hospital) (*Hospital, interface{}, int) {
+		entryId := c.Param("entryId")
+		performanceId := c.Param("performanceId")
+
+		if entryId == "" || performanceId == "" {
+			return nil, gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Entry ID and Performance ID are required",
+			}, http.StatusBadRequest
+		}
+
+		entryIndx := slices.IndexFunc(hospital.EmployeeList, func(employee EmployeeListEntry) bool {
+			return entryId == employee.Id
+		})
+
+		if entryIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Entry not found",
+			}, http.StatusNotFound
+		}
+
+		performanceIndx := slices.IndexFunc(hospital.EmployeeList[entryIndx].Performances, func(perf PerformanceEntry) bool {
+			return performanceId == perf.Id
+		})
+
+		if performanceIndx < 0 {
+			return nil, gin.H{
+				"status":  http.StatusNotFound,
+				"message": "Performance entry not found",
+			}, http.StatusNotFound
+		}
+
+		hospital.EmployeeList[entryIndx].Performances = append(
+			hospital.EmployeeList[entryIndx].Performances[:performanceIndx],
+			hospital.EmployeeList[entryIndx].Performances[performanceIndx+1:]...
+		)
+		return hospital, nil, http.StatusNoContent
+	})
+}
+
