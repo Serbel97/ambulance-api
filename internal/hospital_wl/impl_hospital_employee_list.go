@@ -165,6 +165,14 @@ func (o *implHospitalEmployeeListAPI) UpdateEmployeeListEntry(c *gin.Context) {
 			hospital.EmployeeList[entryIndx].Role.Code = entry.Role.Code
 		}
 
+		// Update performance rating
+		hospital.EmployeeList[entryIndx].Performance = entry.Performance
+
+		// Update performances array
+		if entry.Performances != nil {
+			hospital.EmployeeList[entryIndx].Performances = entry.Performances
+		}
+		
 		return hospital, hospital.EmployeeList[entryIndx], http.StatusOK
 	})
 }
