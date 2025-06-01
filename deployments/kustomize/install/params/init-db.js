@@ -52,6 +52,16 @@ let result = db[collection].insertMany([
             { "value": "Nurse", "code": "checkup" },
             { "value": "Transporter", "code": "jason-statham" }
         ]
+    },
+    {
+        "id": "hospital-nr",
+        "name": "Hospital Nitra",
+        "address": "321",
+        "predefinedRoles": [
+            { "value": "Doctor", "code": "rhinitis" },
+            { "value": "Nurse", "code": "checkup" },
+            { "value": "Transporter", "code": "jason-statham" }
+        ]
     }
 ]);
 
